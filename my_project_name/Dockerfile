@@ -15,17 +15,18 @@ RUN a2enmod rewrite
 # Set the working directory
 WORKDIR /var/www/html
 
+# Set up Composer (ensure it’s in the PATH correctly)
+RUN curl -sS https://getcomposer.org/installer | php && \
+    mv composer.phar /usr/local/bin/composer
+
 # Copy the Symfony project files to the working directory
 COPY . .
 
 # Set the document root to Symfony's public directory
 RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
 
-# Install Composer
-RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-
 # Install project dependencies based on composer.json
-RUN composer install --no-dev --optimize-autoloader
+RUN /usr/local/bin/composer install --no-dev --optimize-autoloader
 
 # Expose the port that Apache will run on
 EXPOSE 80
