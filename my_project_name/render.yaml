@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: symfony-project
+    env: php
+    plan: free
+    rootDir: .
+    buildCommand: "composer install"
+    startCommand: "php public/index.php"
+    envVars:
+      - key: APP_ENV
+        value: production
+    staticPublishPath: public
